@@ -2,7 +2,7 @@
 
 ## General
 
-- FMOD provides C, WASM, and JavaScript libraries
+- FMOD provides C, C++, C#, WASM, and JavaScript libraries
   - Almost all tools use these libraries instead of parsing the raw bank files
 - FMOD refers to each piece of audio as an "event"
 

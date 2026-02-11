@@ -6,7 +6,7 @@ Use a tool like [FSB/BANK Extractor & Rebuilder](https://github.com/IZH318/FSB-B
 
 ## Add new game music
 
-Not really possible without rebuilding the FMOD project. We could add new bank files to Music/, but then we'd need to update Music_Game event in Music.bank to reference them, and more importantly add all the new strings with the filenames to Master.strings.bank. This would be prohibitively complicated
+Not really possible without rebuilding the FMOD project. We could add new bank files to Music/, but then we'd need to update Music_Game event in Music.bank to reference them, and more importantly add all the new strings with the filenames to Master.strings.bank. This would be prohibitively complicated.
 
 ## Research
 
