@@ -11,8 +11,10 @@ Here's a workaround to play additional music in Linux:
 1. Copy additional music to the directory
 1. Go to the game properties in Steam and set _Launch Options_ to:
    ```
-   mpv --no-audio-display --shuffle ~/Music/Ozymandias/ & %command% && killall mpv
+   mpv --volume=50 --no-audio-display --shuffle ~/Music/Ozymandias/ & %command% && killall mpv
    ```
-   (Replace `~/Music/Ozymandias/`) with the directory you put the music in
+
+   - Replace `~/Music/Ozymandias/`) with the directory you put the music in
+   - Modify or remove volume as desired (50% matches the in-game default)
    - This will automatically start playing the music in that directory in a random order when the game is started and stop when the game is stopped
 1. In the game, go to _Settings_ and turn _Music Volume_ all the way down
