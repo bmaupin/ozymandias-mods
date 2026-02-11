@@ -1,21 +1,60 @@
 # Modding game music
 
+## Replace game music
+
+Use a tool like [FSB/BANK Extractor & Rebuilder](https://github.com/IZH318/FSB-BANK-Extractor-Rebuilder)
+
+## Add new game music
+
+Not really possible without rebuilding the FMOD project. We could add new bank files to Music/, but then we'd need to update Music_Game event in Music.bank to reference them, and more importantly add all the new strings with the filenames to Master.strings.bank. This would be prohibitively complicated
+
 ## Research
 
 #### General
 
 - Music stored in Ozymandias/Ozymandias/Content/FMOD/Desktop
-- Master.bank
-  - Master file that stores events
+- Tracks are in a proprietary FMOD format
+  - See [FMOD notes](./fmod.md)
+
+#### Files
+
 - Master.strings.bank
-  - Stores filenames
+  - Stores all strings for music events
+    ```
+    $ strings Master.strings.bank | grep -A 10 Tracks
+    Tracks/
+    1_Mediterranean Passage
+    3_Phoenician_Scripture
+    5_New_World
+    7_Pyramids
+    9_Persian_Dawn
+    1_Tyrian_Purple
+    3_Ngolo
+    5_History
+    7_Caspian_Sea
+    9_Nyatiti
+    ```
 - Music/\*.assets.bank
   - Stores the actual music tracks
+  - 48000 sample rate (this is important for calculating duration)
+  - Stingers: win/lose tracks
+  - Music: transition tracks?
 - Music/\*.bank
-  - ???
+  - Metadata for tracks
+- Music.bank
+  - GUID: `000d f80b 826c cf4e a48f e8c0 4651 94e3`
+    - Only referenced in Master.strings.bank and Music.bank
+  - Contains the `Music_Game` event
+    - GUID `24d4 5250 8fe8 a94b aa91 d1b2 06ff 9428`
+    - Only referenced in Master.strings.bank and Music.bank
+- Music.assets.bank
+  - Contains transition tracks to be played in between each of the soundtrack tracks
 
 #### Tools
 
+- [FSB/BANK Extractor & Rebuilder](https://github.com/IZH318/FSB-BANK-Extractor-Rebuilder)
+  - Annoying to install but useful for examining detailed bank and track information
+  - Make sure to copy 64-bit versions of required files (see release notes)
 - [Fmod Bank Tools](https://github.com/Wouldubeinta/Fmod-Bank-Tools)
   - Can be used to replace music in .assets.bank files
   - ⚠️ Music must be same duration or less
@@ -56,3 +95,19 @@ Found a GUID at offset 748 - {d2dafa45-930b-4d98-a0aa-c98d542f7d0b} - 45fadad20b
 
 $ wine 2>/dev/null guid_replacer.exe Ozymandias/Music/Track_Tyrian_Purple.assets.bank
 ```
+
+#### Manual steps to replace game music
+
+👉 Not practical at all, just use a tool
+
+1. Open the .bank (not .assets.bank file) for the track in the Music/ directory
+   - e.g. _Track_Tyrian_Purple.bank_
+1. Find the `EVNTEVTB` tag (starting around 0x2e0)
+1. Get the track GUID starting 4 bytes after the tag (around 0x2ec)
+   - e.g. `45fa dad2 0b93 984d a0aa c98d 542f 7d0b`
+1. Get the track duration starting 0x140 bytes from the beginning of `EVNTEVTB` (around 0x420)
+   - e.g. `b1fa eb00`, big endian = `0x00ebfab1` = 15465137
+1. Divide by the sample rate (48000) to get the duration
+   - e.g. 15465137 / 48000 = 322.19 seconds
+1. Replace .asset.bank file with new audio
+1. Update .bank file with new duration
